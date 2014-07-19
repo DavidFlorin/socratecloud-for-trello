@@ -1,4 +1,4 @@
-socratecloud-for-rrello
+socratecloud-for-trello
 =======================
 
 SocrateCloud for Trello
