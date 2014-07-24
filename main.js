@@ -30,29 +30,55 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 {	
 	$.each(mutations, function(index, mutation)
 	{
+		//if (mutation.addedNodes.length > 0)
+		//	log("**");
 		var $target = $(mutation.target);
+		
+		if ($target.hasClass('list-cards'))
+		{
+			$target.find('.list-card').each(function(){
+				log("# Calculate qty for: " + $(this).find('a.list-card-title')[0].innerText);
+				if (this.card)
+				{
+					log("already calculated");
+					return;
+				}
+				log("# add new");
+				this.card = new card(this);
+			});
+		
+		};
+			
 		if ($target.hasClass('list-card-title'))
 		{
 			log("Cart title changed: " + $target[0].innerText);
 			log($target.closest('.list-card')[0].listCard);
 		}
 	});
-	
+
 });
 
 recalcTotalsObserver.observe(document.body, {childList: true, characterData: true, attributes: false, subtree: true});
 
-//var recalculate = debounce(getUsers, 500, true);
+//Entry Point 
+$(function()
+{
+	setTimeout(calculateAll);
+});
 
-function getUsers() {
-	console.log("Get users");
-	return "User Tst - !123";
+function calculateAll()
+{
+	log("Calculate All");
+	
+	$('.list-card').each(function(){
+		log("* Calculate qty for: " + $(this).find('a.list-card-title')[0].innerText);
+		if (this.card)
+		{
+			log("already calculated");
+			return;
+		}
+		log("* add new");
+		this.card = new card(this);
+		
+	});
 };
-
-var getU = function() {
-	console.log("Get users!!!!!!!!!");
-	return "User Tst - !123!!!!!!!!!";
-};
-
-
-
