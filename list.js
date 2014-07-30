@@ -3,14 +3,32 @@
  */
 function list(el)
 {
-	this.$el = $(el);
 	this.total = 0;
 	
-	var $total=$('<span class="list-total">');
-
-	this.show = function()
+	var $total=$('<span class="list-total">'),
+		$el = $(el);
+	
+	this.calculate = function()
 	{
-		$total.empty().appendTo(this.$el.find('.list-title,.list-header'));
-		$total.append('<div/>').text(this.total > 0 ? this.total : '');
+		var sum = 0;
+		$el.find('.list-card').each(function(){
+			if (this.card)
+				sum += this.card.qty;
+		});
+		this.total = sum;
+		
+		show(this);
+	};
+	
+	this.setTotal = function(total)
+	{
+		this.total = total;
+		show(this);
+	};
+
+	var show = function(list)
+	{
+		$total.empty().appendTo($el.find('.list-title,.list-header'));
+		$total.append('<div/>').text(list.total > 0 ? list.total : '');
 	};
 }

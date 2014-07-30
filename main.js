@@ -37,11 +37,17 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 		if ($target.hasClass('list-cards'))
 		{
 			var total = 0;
-			$target.find('.list-card').each(function(){
-				log("# Calculate qty for: " + $(this).find('a.list-card-title')[0].innerText);
+			$target.find('.list-card').each(function()
+			{	
+				var $title = $(this).find('a.list-card-title');
+				if ($title.length == 0)
+					return;
+					
+				log("# Calculate qty for: " + $title[0].innerText);
 				if (this.card)
 				{
 					log("# already calculated");
+					total += this.card.qty;
 					return;
 				}
 				this.card = new card(this);
@@ -51,17 +57,24 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 			});
 			
 			//get list element and create new list object
-			var el = $target.closest('.list');
-			if (!el.list)
-				el.list = new list(el);
+			var $el = $target.closest('.list');
+			if (!$el[0].list)
+				$el[0].list = new list($el[0]);
 				
-			el.list.total = total;
-			el.list.show();
+			$el[0].list.setTotal(total);
 		} 
 		else if ($target.hasClass('list-card-title'))
 		{
 			log("Cart title changed: " + $target[0].innerText);
-			log($target.closest('.list-card')[0].card);
+			
+			var $el = $target.closest('.list-card');
+			if ($el.length == 1)
+			{
+				if (!$el[0].card)
+					$el[0].card = new card($el[0]);
+				else
+					$el[0].card.calculate();
+			}
 		}
 	});
 
@@ -90,6 +103,7 @@ function calculateAll()
 			if (this.card)
 			{
 				log("* already calculated");
+				total += this.card.qty;
 				return;
 			}
 			this.card = new card(this);
@@ -102,7 +116,6 @@ function calculateAll()
 		if (!this.list)
 			this.list = new list(this);
 
-		this.list.total = total;
-		this.list.show();
+		this.list.setTotal(total);
 	});
 };

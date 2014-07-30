@@ -3,22 +3,26 @@
  */
 function card(el)
 {
-	this.$el = $(el);
 	this.qty = 0;
 	
-	var $badge=$('<div class="badge badge-points point-count"/>');
+	var $badge=$('<div class="badge badge-points point-count">'),
+		$el = $(el);
 	
 	this.calculate = function()
 	{
-		$title = this.$el.find('a.list-card-title');
+		var $title = $el.find('a.list-card-title');
 		
 		if(!$title[0])
 		{
 			this.points = 0;
 			return;
 		}
-		
+		var parsedTitle = $title.data('parsed-title');				
 		var titleText = $title[0].innerText;
+		
+		//nothing changed
+		if (parsedTitle == titleText)
+			return;
 		
 		if (titleText.indexOf('(') >= 0 && titleText.indexOf(')') >= 1)
 		{
@@ -27,16 +31,25 @@ function card(el)
 		}
 		else
 		{
-			this.points = 0;
-			return;			
+			this.qty = 0;
 		}
 		
-		this.show();
+		$title.data('parsed-title', $title[0].innerText);
+				
+		show(this);
+		
+		//do not create new, new one is created in main.js
+		var el = $el.closest('.list');
+		if (el[0].list)
+			el[0].list.calculate();
 	};
 	
-	this.show = function()
+	var show = function(card)
 	{
-		$badge.prependTo(this.$el.find('.badges')).text(''+this.qty);
+		if (this.qty == 0)
+			$badge.remove();
+		else
+			$badge.prependTo($el.find('.badges')).text(''+card.qty);
 	};
 	
 	//calculte when instantiate
