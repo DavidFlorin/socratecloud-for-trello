@@ -14,7 +14,7 @@ function card(el)
 		
 		if(!$title[0])
 		{
-			this.points = 0;
+			this.qty = 0;
 			return;
 		}
 		var parsedTitle = $title.data('parsed-title');				
@@ -27,7 +27,16 @@ function card(el)
 		if (titleText.indexOf('(') >= 0 && titleText.indexOf(')') >= 1)
 		{
 			this.qty = new Number(titleText.substring(1, titleText.indexOf(')')));
-			$title[0].innerText = titleText.substring(titleText.indexOf(')') + 1).trim();
+			
+			if (isNaN(this.qty)) //invalid number
+			{
+				this.qty = 0;
+				//do not change title
+			}
+			else
+			{
+				$title[0].innerText = titleText.substring(titleText.indexOf(')') + 1).trim();
+			}
 		}
 		else
 		{
@@ -46,7 +55,7 @@ function card(el)
 	
 	var show = function(card)
 	{
-		if (this.qty == 0)
+		if (card.qty == 0)
 			$badge.remove();
 		else
 			$badge.prependTo($el.find('.badges')).text(''+card.qty);

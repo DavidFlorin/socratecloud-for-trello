@@ -2,7 +2,7 @@
  * 
  */
 function log(msg) {
-	console.log(msg);
+	//console.log(msg);
 };
 
 // Thanks @unscriptable - http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
@@ -30,8 +30,6 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 {	
 	$.each(mutations, function(index, mutation)
 	{
-		//if (mutation.addedNodes.length > 0)
-		//	log("**");
 		var $target = $(mutation.target);
 		
 		if ($target.hasClass('list-cards'))
