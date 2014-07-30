@@ -8,13 +8,13 @@
   "content_scripts": [
 		{
 			"matches": ["https://trello.com/*"],
-			"js": ["jquery-1.7.1.min.js","main.js", "card.js", "list.js"],
-			"css": ["main.css"]
+			"js": ["lib/jquery-1.7.1.min.js","main.js", "card.js", "list.js"],
+			"css": ["css/main.css"]
 		}
 	],
   
   "browser_action": {
-    "default_icon": "icon.png",
+    "default_icon": "images/icon.png",
     "default_popup": "popup.html"
   }
 }

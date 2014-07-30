@@ -46,7 +46,7 @@ function card(el)
 	
 	var show = function(card)
 	{
-		if (this.qty == 0)
+		if (card.qty == 0)
 			$badge.remove();
 		else
 			$badge.prependTo($el.find('.badges')).text(''+card.qty);
