@@ -5,7 +5,7 @@ function card(el)
 {
 	this.qty = 0;
 	
-	var $badge=$('<div class="badge badge-points point-count">'),
+	var $badge=$('<div class="badge badge-qty">'),
 		$el = $(el);
 	
 	this.calculate = function()
