@@ -24,9 +24,12 @@ function card(el)
 		if (parsedTitle == titleText)
 			return;
 		
-		if (titleText.indexOf('(') >= 0 && titleText.indexOf(')') >= 1)
+		var index_from = titleText.indexOf('(');
+		var index_to = titleText.indexOf(')', index_from);
+		
+		if (index_from >= 0 && index_to >= 1)
 		{
-			this.qty = new Number(titleText.substring(1, titleText.indexOf(')')));
+			this.qty = new Number(titleText.substring(1, index_to));
 			
 			if (isNaN(this.qty)) //invalid number
 			{
@@ -35,7 +38,7 @@ function card(el)
 			}
 			else
 			{
-				$title[0].innerText = titleText.substring(titleText.indexOf(')') + 1).trim();
+				$title[0].innerText = titleText.substring(index_to + 1).trim();
 			}
 		}
 		else

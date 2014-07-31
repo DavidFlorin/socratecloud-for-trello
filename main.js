@@ -2,7 +2,7 @@
  * 
  */
 function log(msg) {
-	//console.log(msg);
+	console.log(msg);
 };
 
 // Thanks @unscriptable - http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
@@ -30,6 +30,8 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 {	
 	$.each(mutations, function(index, mutation)
 	{
+		//log("Mutation: " + mutation.target.className);
+		
 		var $target = $(mutation.target);
 		
 		if ($target.hasClass('list-cards'))
@@ -74,6 +76,21 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 					$el[0].card.calculate();
 			}
 		}
+		//Parse title in detail card
+		else if ($target.hasClass('window-wrapper'))
+		{
+			var $title = $target.find('.window-title-text');
+			if ($title.length > 0)
+			{
+				//log("Parse window-wrapper: " + $title[0].innerText);
+				parseWindowTitle($title[0]);
+			}
+		}
+		else if ($target.hasClass('window-title-text'))
+		{
+			//log("Parse window-title-text: " + $target[0].innerText);
+			parseWindowTitle($target[0]);
+		}
 	});
 
 });
@@ -117,3 +134,20 @@ function calculateAll()
 		this.list.setTotal(total);
 	});
 };
+
+var parseWindowTitle = debounce(function(title)
+{
+	var text = title.innerText;
+	log("Parse window-title-text: " + text);
+	
+	var index_from = text.indexOf('(');
+	var index_to = text.indexOf(')', index_from);
+	
+	if (index_from >= 0 && index_to >= 1)
+	{
+		var qty = new Number(text.substring(1, index_to));
+		
+		if (!isNaN(qty))
+			title.innerText = text.substring(index_to + 1).trim();
+	}
+}, 100, true);
