@@ -88,11 +88,32 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 				//log("Parse window-wrapper: " + $title[0].innerText);
 				parseWindowTitle($title[0]);
 			}
+			//parse comments from activities
+			parseComments($target);
 		}
 		else if ($target.hasClass('window-title-text'))
 		{
 			//log("Parse window-title-text: " + $target[0].innerText);
 			parseWindowTitle($target[0]);
+		}
+		//parse comments from activities
+		else if ($target.hasClass('js-list-actions'))
+		{
+			parseComments($target);
+		}
+		//comment change - except when click to edit
+		else if ($target.hasClass('phenom-comment'))
+		{
+			if (!$target.hasClass('editing'))
+				parseComments($target);
+//			else
+//			{
+//				var $trg = $target;
+//				$target.find(':submit').click(function(data, event ) {
+//					//change text
+//					$trg.find('textarea')[0].innerText = "fff";
+//				});
+//			}
 		}
 	});
 
@@ -152,8 +173,30 @@ var parseWindowTitle = debounce(function(title)
 	
 	var parsedTitle = parseCardTitle(text);
 	if (parsedTitle)
-		title.innerText = parsedTitle.title;
+	{
+		title.innerText = parsedTitle.title;	
+		document.title = parsedTitle.title;
+	}
 
+}, 100, true);
+
+var parseComments = debounce(function($target)
+{
+	if ($target.hasClass('phenom-comment'))
+	{
+		if (!$target[0].comment)
+			$target[0].comment = new comment($target[0]);
+		else if (!$target[0].comment.isBadgeVisible())
+			$target[0].comment.calculate();
+	}
+	else
+	{
+		$($target.find('.phenom-comment')).each(function()
+		{
+			if (!this.comment)
+				this.comment = new comment(this);
+		});
+	}
 }, 100, true);
 
 /**
@@ -165,7 +208,7 @@ var parseCardTitle = function(titleText)
 	var response = {qty:0, estimated:0, title:''};
 	
 	var index_from = titleText.indexOf('[');
-	var index_to = titleText.indexOf(']', index_from);
+	var index_to = titleText.indexOf(']');
 		
 	if (index_from == 0 && index_to >= 1)
 	{

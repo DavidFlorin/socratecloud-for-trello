@@ -8,7 +8,7 @@
   "content_scripts": [
 		{
 			"matches": ["https://trello.com/*"],
-			"js": ["lib/jquery-1.7.1.min.js","main.js", "card.js", "list.js"],
+			"js": ["lib/jquery-1.7.1.min.js","main.js", "card.js", "list.js", "comment.js"],
 			"css": ["css/main.css"]
 		}
 	],
