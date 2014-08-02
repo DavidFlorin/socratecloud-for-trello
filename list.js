@@ -3,32 +3,52 @@
  */
 function list(el)
 {
-	this.total = 0;
+	this.totalQty = 0;
+	this.totalEstimated = 0;
 	
 	var $total=$('<span class="list-total">'),
 		$el = $(el);
 	
 	this.calculate = function()
 	{
-		var sum = 0;
+		var totalQty = 0;
+		var totalEstimated = 0;
 		$el.find('.list-card').each(function(){
 			if (this.card)
-				sum += this.card.qty;
+			{
+				totalQty += this.card.qty;
+				totalEstimated += this.card.totalEstimated;
+			}
 		});
-		this.total = sum;
+		this.totalQty = totalQty;
+		this.totalEstimated = totalEstimated;
 		
 		show(this);
 	};
 	
-	this.setTotal = function(total)
+	this.setTotals = function(totalQty, totalEstimated)
 	{
-		this.total = total;
+		this.totalQty = totalQty;
+		this.totalEstimated = totalEstimated;
+		
 		show(this);
 	};
-
+	
+	/**
+	 * DOM change - add list heder total qty and total estimated
+	 * */
 	var show = function(list)
 	{
 		$total.empty().appendTo($el.find('.list-title,.list-header'));
-		$total.append('<div/>').text(list.total > 0 ? list.total : '');
+		
+		var text = '';
+		if (list.totalQty > 0 || list.totalEstimated > 0)
+		{
+			text += list.totalQty;
+			if (list.totalEstimated > 0)
+				text += ' / ' + list.totalEstimated;
+		}
+				
+		$total.append('<div/>').text(text);
 	};
 }

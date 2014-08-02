@@ -4,7 +4,7 @@
 function card(el)
 {
 	this.qty = 0;
-	this.total = 0;
+	this.estimated = 0;
 	
 	var $badge=$('<div class="badge badge-qty">'),
 		$el = $(el);
@@ -25,30 +25,19 @@ function card(el)
 		if (parsedTitle == titleText)
 			return;
 		
-		var index_from = titleText.indexOf('[');
-		var index_to = titleText.indexOf(']', index_from);
+		parsedTitle = parseCardTitle(titleText);
 		
-		if (index_from == 0 && index_to >= 1)
+		if (parsedTitle)
 		{
-			var index = titleText.indexOf('/');
-			if (index > index_from && index < index_to)
-			{
-				this.qty = new Number(titleText.substring(index_from + 1, index));	
-				this.total = new Number(titleText.substring(index + 1, index_to));	
-			}
-			else
-			{
-				this.qty = new Number(titleText.substring(index_from + 1, index_to));	
-			}
-			
-			if (isNaN(this.qty) || isNaN(this.total)) //invalid numbers
-				this.qty = 0;
-			else
-				$title[0].innerText = titleText.substring(index_to + 1).trim();
+			this.qty = parsedTitle.qty;
+			this.estimated = parsedTitle.estimated;
+			//change title
+			$title[0].innerText = parsedTitle.title;
 		}
 		else
 		{
 			this.qty = 0;
+			this.estimated = 0;
 		}
 		
 		$title.data('parsed-title', $title[0].innerText);
@@ -60,21 +49,24 @@ function card(el)
 		if (el[0].list)
 			el[0].list.calculate();
 	};
+
+	//calculate when instantiate
+	this.calculate();
 	
+	/**
+	 * DOM change - add qty and estimated badge
+	 * */
 	var show = function(card)
 	{
-		if (card.qty == 0 && card.total == 0)
+		if (card.qty == 0 && card.estimated == 0)
 			$badge.remove();
 		else
 		{
 			var text = ''+card.qty;
-			if (card.total > 0)
-				text += ' / ' + card.total;
+			if (card.estimated > 0)
+				text += ' / ' + card.estimated;
 				
 			$badge.prependTo($el.find('.badges')).text(text);
 		}
 	};
-	
-	//calculte when instantiate
-	this.calculate();
 }

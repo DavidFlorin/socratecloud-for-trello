@@ -36,7 +36,8 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 		
 		if ($target.hasClass('list-cards'))
 		{
-			var total = 0;
+			var totalQty = 0;
+			var totalEstimated = 0;
 			$target.find('.list-card:not(.placeholder)').each(function()
 			{	
 				var $title = $(this).find('a.list-card-title');
@@ -47,13 +48,15 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 				if (this.card)
 				{
 					log("# already calculated");
-					total += this.card.qty;
+					totalQty += this.card.qty;
+					totalEstimated += this.card.estimated;
 					return;
 				}
 				this.card = new card(this);
 				log("# add new - " + this.card.qty);
 				
-				total += this.card.qty;
+				totalQty += this.card.qty;
+				totalEstimated += this.card.estimated;
 			});
 			
 			//get list element and create new list object
@@ -61,7 +64,7 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 			if (!$el[0].list)
 				$el[0].list = new list($el[0]);
 				
-			$el[0].list.setTotal(total);
+			$el[0].list.setTotals(totalQty, totalEstimated);
 		} 
 		else if ($target.hasClass('list-card-title'))
 		{
@@ -107,73 +110,85 @@ $(function()
 	});
 });
 
-function calculateAll()
+
+var calculateAll = function()
 {
 	$('.list').each(function()
 	{
-		var total = 0;
+		var totalQty = 0;
+		var totalEstimated = 0;
 		$(this).find('.list-card').each(function()
 		{
 			log("* Calculate qty for: " + $(this).find('a.list-card-title')[0].innerText);
 			if (this.card)
 			{
 				log("* already calculated");
-				total += this.card.qty;
+				totalQty += this.card.qty;
+				totalEstimated += this.card.estimated;
 				return;
 			}
 			this.card = new card(this);
 			log("* add new - " + this.card.qty);	
 			
-			total += this.card.qty;
+			totalQty += this.card.qty;
+			totalEstimated += this.card.estimated;
 		});	
 		
 		//get list element and create new list object
 		if (!this.list)
 			this.list = new list(this);
 
-		this.list.setTotal(total);
+		this.list.setTotals(totalQty, totalEstimated);
 	});
 };
 
+/**
+ * Parse Window Title when open a Trello card to edit
+ * */
 var parseWindowTitle = debounce(function(title)
 {
 	var text = title.innerText;
 	log("Parse window-title-text: " + text);
 	
-	var index_from = text.indexOf('[');
-	var index_to = text.indexOf(']', index_from);
-	
-	if (index_from == 0 && index_to >= 1)
-	{
-		var qty = new Number(text.substring(1, index_to));
-		
-		if (!isNaN(qty))
-			title.innerText = text.substring(index_to + 1).trim();
-	}
+	var parsedTitle = parseCardTitle(text);
+	if (parsedTitle)
+		title.innerText = parsedTitle.title;
+
 }, 100, true);
 
-var getQtyFromTitle = function(titleText)
+/**
+ *  Parse Card Title and return qty, estimated qty and parsed title
+ *  @return null if could not parse title or format title is wrong 
+ * */
+var parseCardTitle = function(titleText)
 {
+	var response = {qty:0, estimated:0, title:''};
+	
+	var index_from = titleText.indexOf('[');
+	var index_to = titleText.indexOf(']', index_from);
+		
 	if (index_from == 0 && index_to >= 1)
 	{
 		var index = titleText.indexOf('/');
 		if (index > index_from && index < index_to)
 		{
-			this.qty = new Number(titleText.substring(index_from + 1, index));	
-			this.total = new Number(titleText.substring(index + 1, index_to));	
+			response.qty = new Number(titleText.substring(index_from + 1, index));	
+			response.estimated = new Number(titleText.substring(index + 1, index_to));	
 		}
 		else
 		{
-			this.qty = new Number(titleText.substring(index_from + 1, index_to));	
+			response.qty = new Number(titleText.substring(index_from + 1, index_to));	
 		}
 
-		if (isNaN(this.qty) || isNaN(this.total)) //invalid numbers
-			this.qty = 0;
-		else
-			$title[0].innerText = titleText.substring(index_to + 1).trim();
+		if (isNaN(response.qty) || isNaN(response.estimated)) //invalid numbers
+			return null;
+			
+		response.title = titleText.substring(index_to + 1).trim();
 	}
 	else
 	{
-		this.qty = 0;
+		return null;
 	}
+	
+	return response;
 };
