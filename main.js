@@ -37,7 +37,7 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 		if ($target.hasClass('list-cards'))
 		{
 			var total = 0;
-			$target.find('.list-card').each(function()
+			$target.find('.list-card:not(.placeholder)').each(function()
 			{	
 				var $title = $(this).find('a.list-card-title');
 				if ($title.length == 0)
@@ -140,10 +140,10 @@ var parseWindowTitle = debounce(function(title)
 	var text = title.innerText;
 	log("Parse window-title-text: " + text);
 	
-	var index_from = text.indexOf('(');
-	var index_to = text.indexOf(')', index_from);
+	var index_from = text.indexOf('[');
+	var index_to = text.indexOf(']', index_from);
 	
-	if (index_from >= 0 && index_to >= 1)
+	if (index_from == 0 && index_to >= 1)
 	{
 		var qty = new Number(text.substring(1, index_to));
 		
@@ -151,3 +151,29 @@ var parseWindowTitle = debounce(function(title)
 			title.innerText = text.substring(index_to + 1).trim();
 	}
 }, 100, true);
+
+var getQtyFromTitle = function(titleText)
+{
+	if (index_from == 0 && index_to >= 1)
+	{
+		var index = titleText.indexOf('/');
+		if (index > index_from && index < index_to)
+		{
+			this.qty = new Number(titleText.substring(index_from + 1, index));	
+			this.total = new Number(titleText.substring(index + 1, index_to));	
+		}
+		else
+		{
+			this.qty = new Number(titleText.substring(index_from + 1, index_to));	
+		}
+
+		if (isNaN(this.qty) || isNaN(this.total)) //invalid numbers
+			this.qty = 0;
+		else
+			$title[0].innerText = titleText.substring(index_to + 1).trim();
+	}
+	else
+	{
+		this.qty = 0;
+	}
+};

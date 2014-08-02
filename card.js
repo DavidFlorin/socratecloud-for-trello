@@ -4,6 +4,7 @@
 function card(el)
 {
 	this.qty = 0;
+	this.total = 0;
 	
 	var $badge=$('<div class="badge badge-qty">'),
 		$el = $(el);
@@ -24,22 +25,26 @@ function card(el)
 		if (parsedTitle == titleText)
 			return;
 		
-		var index_from = titleText.indexOf('(');
-		var index_to = titleText.indexOf(')', index_from);
+		var index_from = titleText.indexOf('[');
+		var index_to = titleText.indexOf(']', index_from);
 		
-		if (index_from >= 0 && index_to >= 1)
+		if (index_from == 0 && index_to >= 1)
 		{
-			this.qty = new Number(titleText.substring(1, index_to));
-			
-			if (isNaN(this.qty)) //invalid number
+			var index = titleText.indexOf('/');
+			if (index > index_from && index < index_to)
 			{
-				this.qty = 0;
-				//do not change title
+				this.qty = new Number(titleText.substring(index_from + 1, index));	
+				this.total = new Number(titleText.substring(index + 1, index_to));	
 			}
 			else
 			{
-				$title[0].innerText = titleText.substring(index_to + 1).trim();
+				this.qty = new Number(titleText.substring(index_from + 1, index_to));	
 			}
+			
+			if (isNaN(this.qty) || isNaN(this.total)) //invalid numbers
+				this.qty = 0;
+			else
+				$title[0].innerText = titleText.substring(index_to + 1).trim();
 		}
 		else
 		{
@@ -58,10 +63,16 @@ function card(el)
 	
 	var show = function(card)
 	{
-		if (card.qty == 0)
+		if (card.qty == 0 && card.total == 0)
 			$badge.remove();
 		else
-			$badge.prependTo($el.find('.badges')).text(''+card.qty);
+		{
+			var text = ''+card.qty;
+			if (card.total > 0)
+				text += ' / ' + card.total;
+				
+			$badge.prependTo($el.find('.badges')).text(text);
+		}
 	};
 	
 	//calculte when instantiate
