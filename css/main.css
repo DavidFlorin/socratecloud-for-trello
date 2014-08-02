@@ -31,3 +31,9 @@
 .badge-qty[level="overhead"] {
 	background-color: #CC0000;
 }
+
+/* Comment quantity badge */
+.badge-qty.phenom-meta {
+	margin: 0 4px 0 0;
+	font-size: 11px;
+}

@@ -39,7 +39,7 @@ function list(el)
 	 * */
 	var show = function(list)
 	{
-		$total.empty().appendTo($el.find('.list-title,.list-header'));
+		$total.empty().appendTo($el.find('.list-header'));
 		
 		var text = '';
 		var level = 'normal';
