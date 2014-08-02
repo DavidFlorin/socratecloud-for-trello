@@ -49,9 +49,6 @@ function card(el)
 		if (el[0].list)
 			el[0].list.calculate();
 	};
-
-	//calculate when instantiate
-	this.calculate();
 	
 	/**
 	 * DOM change - add qty and estimated badge
@@ -69,4 +66,7 @@ function card(el)
 			$badge.prependTo($el.find('.badges')).text(text);
 		}
 	};
+	
+	//calculate when instantiate
+	this.calculate();
 }
