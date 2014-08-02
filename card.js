@@ -60,10 +60,19 @@ function card(el)
 		else
 		{
 			var text = ''+card.qty;
+			var level = 'normal';
 			if (card.estimated > 0)
+			{
+				if (card.estimated < card.qty)
+					level = 'overhead';
+				//else if ((card.qty / card.estimated)*100 >= 80)
+				//	level = 'warning';
+
 				text += ' / ' + card.estimated;
-				
-			$badge.prependTo($el.find('.badges')).text(text);
+			}	
+			
+			//style and add to DOM
+			$badge.attr('level', level).prependTo($el.find('.badges')).text(text);
 		}
 	};
 	

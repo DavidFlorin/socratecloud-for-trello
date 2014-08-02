@@ -42,13 +42,19 @@ function list(el)
 		$total.empty().appendTo($el.find('.list-title,.list-header'));
 		
 		var text = '';
+		var level = 'normal';
 		if (list.totalQty > 0 || list.totalEstimated > 0)
 		{
 			text += list.totalQty;
 			if (list.totalEstimated > 0)
+			{
+				if (list.totalEstimated < list.totalQty)
+					level = 'overhead'; 
+						
 				text += ' / ' + list.totalEstimated;
+			}
 		}
 				
-		$total.append('<div/>').text(text);
+		$total.attr('level', level).append('<div/>').text(text);
 	};
 }

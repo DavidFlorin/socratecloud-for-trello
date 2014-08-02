@@ -1,24 +1,33 @@
 .list-total {
-	color: #006580;
 	font-size: 16px;
 	font-weight: bold;
 	float: right;
 	margin: 1px 0px 0 0;
 	line-height:18px;
 }
+.list-total[level="normal"]{
+	color: #006580;
+}
+.list-total[level="overhead"]{
+	color: #CC0000;
+}
 
 .badge-qty {
-	background-color: #006580 !important;
-	border-color: #005b72 !important;
-	border-bottom-color: #004b5f !important;
+	border-color: #005b72;
 	border-radius: 3px;
 	color: #e1fafb !important;
-	float: right;
 	font-size: 11px;
 	line-height: 16px;
-	background-repeat: no-repeat !important;
-	background-position: 3px 3px !important;
 	padding: 0 4px 0 4px !important;
 	min-width: 15px;
 	text-align: center;
+}
+.badge-qty[level="normal"] {
+	background-color: #006580 !important;
+}
+.badge-qty[level="warning"] {
+	background-color: #FF6600;
+}
+.badge-qty[level="overhead"] {
+	background-color: #CC0000;
 }
