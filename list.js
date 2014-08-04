@@ -17,13 +17,16 @@ function list(el)
 			if (this.card)
 			{
 				totalQty += this.card.qty;
-				totalEstimated += this.card.totalEstimated;
+				totalEstimated += this.card.estimated;
 			}
 		});
 		this.totalQty = totalQty;
 		this.totalEstimated = totalEstimated;
 		
 		show(this);
+		
+		//calculate board total
+		calculateBoardTotal();
 	};
 	
 	this.setTotals = function(totalQty, totalEstimated)

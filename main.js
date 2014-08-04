@@ -65,6 +65,8 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 				$el[0].list = new list($el[0]);
 				
 			$el[0].list.setTotals(totalQty, totalEstimated);
+			
+			calculateBoardTotal();
 		} 
 		else if ($target.hasClass('list-card-title'))
 		{
@@ -167,6 +169,8 @@ var calculateAll = function()
 
 		this.list.setTotals(totalQty, totalEstimated);
 	});
+	
+	calculateBoardTotal();
 };
 
 /**
@@ -198,7 +202,14 @@ var parseWindowTitle = debounce(function(title)
 			text += ' / ' + parsedTitle.estimated;
 		}	
 			
-		var $badge=$('<div class="badge badge-qty window-title hide-on-edit">');
+		var $badge = $cardDetails.find('.badge.badge-qty.window-title:first');
+		
+		if ($badge.length == 0)
+		{
+			$badge = $('<div class="badge badge-qty window-title hide-on-edit">');
+			$cardDetails.$badge = $badge;
+		}
+			
 		$badge.attr('level', level).insertBefore($cardDetails.find('.window-title-text')).text(text);
 	}
 
@@ -259,3 +270,47 @@ var parseCardTitle = function(titleText)
 	
 	return response;
 };
+
+//Total badge
+var $totalBadge;
+
+var calculateBoardTotal = debounce(function()
+{
+	log("Calculate board totals...");
+	
+	if (!$totalBadge)
+	{
+	 	$totalBadge = $('<div class="badge badge-qty total">');
+		var $header_buttons = $('.board-header-btns.right');
+		
+		$totalBadge.appendTo($header_buttons);
+	}
+	
+	var qty = 0;
+	var estimated = 0;
+	
+	//get all lists and calculate total from them
+	$('.list').each(function(){
+		if (this.list)
+		{
+			qty += this.list.totalQty;
+			estimated += this.list.totalEstimated;
+		}
+	});
+	
+	//calculate total
+	var text = ''+qty;
+	var level = 'normal';
+	if (estimated > 0)
+	{
+		if (estimated < qty)
+			level = 'overhead';
+		//else if ((qty / estimated)*100 >= 80)
+		//	level = 'warning';
+
+		text += ' / ' + estimated;
+	}	
+	//style and set text
+	$totalBadge.attr('level', level).text(text);
+	
+}, 500, false);

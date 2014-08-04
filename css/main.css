@@ -23,7 +23,7 @@
 	text-align: center;
 }
 .badge-qty[level="normal"] {
-	background-color: #006580 !important;
+	background-color: #006580;
 }
 .badge-qty[level="warning"] {
 	background-color: #FF6600;
@@ -40,4 +40,15 @@
 
 .badge-qty.window-title {
 	margin: 3px 3px 3px 0;
+	line-height: 18px;
+}
+
+.badge-qty.total {
+	font-size: 16px;
+	font-weight: bold; 
+	line-height: 30px; 
+	height: 30px; 
+	margin: 0 6px 0 0;
+	padding: 0px 6px !important; 
+	border-radius: 5px;
 }
