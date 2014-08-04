@@ -17,7 +17,7 @@
 	border-radius: 3px;
 	color: #e1fafb !important;
 	font-size: 11px;
-	line-height: 16px;
+	line-height: 18px;
 	padding: 0 4px 0 4px !important;
 	min-width: 15px;
 	text-align: center;
@@ -40,7 +40,6 @@
 
 .badge-qty.window-title {
 	margin: 3px 3px 3px 0;
-	line-height: 18px;
 }
 
 .badge-qty.total {
