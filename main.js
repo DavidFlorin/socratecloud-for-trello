@@ -105,7 +105,13 @@ var recalcTotalsObserver = new MutationObserver(function(mutations)
 		else if ($target.hasClass('phenom-comment'))
 		{
 			if (!$target.hasClass('editing'))
-				parseComments($target);
+			{
+				//parseComments($target);
+				if (!$target[0].comment)
+					$target[0].comment = new comment($target[0]);
+				else if (!$target[0].comment.isBadgeVisible())
+					$target[0].comment.calculate();
+			}
 //			else
 //			{
 //				var $trg = $target;
@@ -177,37 +183,37 @@ var parseWindowTitle = debounce(function(title)
 		title.innerText = parsedTitle.title;	
 		document.title = parsedTitle.title;
 		
-//add badges to title
-//		$cardDetails = $(title).closest('.window-wrapper');
-//		
-//		var text = ''+parsedTitle.qty;
-//		var level = 'normal';
-//		if (parsedTitle.estimated > 0)
-//		{
-//			if (parsedTitle.estimated < parsedTitle.qty)
-//				level = 'overhead';
-//			//else if ((parsedTitle.qty / parsedTitle.estimated)*100 >= 80)
-//			//	level = 'warning';
-//
-//			text += ' / ' + parsedTitle.estimated;
-//		}	
-//			
-//		var $badge=$('<div class="badge badge-qty window-title">');
-//		$badge.attr('level', level).insertBefore($cardDetails.find('.window-title-text')).text(text);
+		//add badges to title
+		$cardDetails = $(title).closest('.window-wrapper');
+		
+		var text = ''+parsedTitle.qty;
+		var level = 'normal';
+		if (parsedTitle.estimated > 0)
+		{
+			if (parsedTitle.estimated < parsedTitle.qty)
+				level = 'overhead';
+			//else if ((parsedTitle.qty / parsedTitle.estimated)*100 >= 80)
+			//	level = 'warning';
+
+			text += ' / ' + parsedTitle.estimated;
+		}	
+			
+		var $badge=$('<div class="badge badge-qty window-title hide-on-edit">');
+		$badge.attr('level', level).insertBefore($cardDetails.find('.window-title-text')).text(text);
 	}
 
 }, 100, true);
 
 var parseComments = debounce(function($target)
 {
-	if ($target.hasClass('phenom-comment'))
-	{
-		if (!$target[0].comment)
-			$target[0].comment = new comment($target[0]);
-		else if (!$target[0].comment.isBadgeVisible())
-			$target[0].comment.calculate();
-	}
-	else
+//	if ($target.hasClass('phenom-comment'))
+//	{
+//		if (!$target[0].comment)
+//			$target[0].comment = new comment($target[0]);
+//		else if (!$target[0].comment.isBadgeVisible())
+//			$target[0].comment.calculate();
+//	}
+//	else
 	{
 		$($target.find('.phenom-comment')).each(function()
 		{

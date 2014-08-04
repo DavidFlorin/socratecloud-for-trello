@@ -5,7 +5,7 @@ function comment(el)
 {
 	this.qty = 5;
 	
-	var $badge=$('<div class="badge badge-qty phenom-meta" level="normal">'),
+	var $badge=$('<div class="badge badge-qty hide-on-edit" level="normal">'),
 		$el = $(el);
 	
 	this.calculate = function()
